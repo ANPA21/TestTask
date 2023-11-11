@@ -1,7 +1,7 @@
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import { Datepicker } from './Datepicker/Datepicker';
 import { Table } from './Table/Table';
-import { Graph } from './Graph/Graph';
+// import { Graph } from './Graph/Graph';
 import _ from 'lodash';
 import { CountrySelector } from './CountrySelector/CountrySelector';
 import { FilterSelector } from './FilterSelector/FilterSelector';
@@ -13,7 +13,7 @@ import {
 } from './helpers';
 
 export const App = () => {
-  const [isTableActive, setIsTableActive] = useState(true);
+  // const [isTableActive, setIsTableActive] = useState(true);
   const [data, setData] = useState([]);
   const [groupedData, setGroupedData] = useState([]);
   const [selectedDates, setSelectedDates] = useState({
@@ -130,14 +130,14 @@ export const App = () => {
 
       <button
         onClick={() => {
-          setIsTableActive(true);
+          // setIsTableActive(true);
         }}
       >
         Table
       </button>
       <button
         onClick={() => {
-          setIsTableActive(false);
+          // setIsTableActive(false);
         }}
       >
         Graph
