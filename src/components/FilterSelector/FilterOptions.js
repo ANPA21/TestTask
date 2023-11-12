@@ -1,11 +1,11 @@
 export const options = [
   {
     label: 'Cases per selected period',
-    value: 'casesPerSelectedPeriod',
+    value: 'casesPerPeriod',
   },
   {
     label: 'Deaths per selected period',
-    value: 'deathsPerSelectedPeriod',
+    value: 'deathsPerPeriod',
   },
   {
     label: 'Total Cases',

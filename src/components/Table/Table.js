@@ -1,10 +1,6 @@
-import {
-  calculateCasesPerPeriod,
-  calculateDeathsPerPeriod,
-} from 'components/helpers';
 import PropTypes, { shape } from 'prop-types';
 
-export const Table = ({ data }) => {
+export const Table = ({ data, datesChanged }) => {
   return (
     <table>
       <thead>
@@ -22,8 +18,12 @@ export const Table = ({ data }) => {
         {data.map((country, index) => (
           <tr key={index}>
             <td>{country.country}</td>
-            <td>{calculateCasesPerPeriod(country.data)}</td>
-            <td>{calculateDeathsPerPeriod(country.data)}</td>
+            <td>
+              {datesChanged ? country.casesPerPeriod : country.totalCases}
+            </td>
+            <td>
+              {datesChanged ? country.deathsPerPeriod : country.totalDeaths}
+            </td>
             <td>{country.totalCases}</td>
             <td>{country.totalDeaths}</td>
             <td>{country.casesPer1000}</td>

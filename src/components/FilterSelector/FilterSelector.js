@@ -17,7 +17,11 @@ export const FilterSelector = ({ handleFilterChange }) => {
   const handleEndInputChange = event => {
     setFilterEndValue(event.target.value);
   };
-
+  const resetFilters = () => {
+    setSelectedFilter(null);
+    setFilterStartValue(null);
+    setFilterEndValue(null);
+  };
   useEffect(() => {
     handleFilterChange({
       selectedFilter,
@@ -28,20 +32,24 @@ export const FilterSelector = ({ handleFilterChange }) => {
   return (
     <div style={{ width: `300px` }}>
       <Select
+        value={selectedFilter === null ? `` : selectedFilter.value}
         onChange={handleSelectorChange}
         options={options}
         placeholder={'Select filter'}
       />
       <input
+        value={filterStartValue === null ? `` : filterStartValue}
         type="number"
         placeholder="Start Value"
         onChange={handleStartInputChange}
       />
       <input
+        value={filterEndValue === null ? `` : filterEndValue}
         type="number"
         placeholder="End Value"
         onChange={handleEndInputChange}
       />
+      <button onClick={resetFilters}>Reset filters</button>
     </div>
   );
 };

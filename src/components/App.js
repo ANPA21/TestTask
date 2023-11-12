@@ -7,6 +7,8 @@ import { CountrySelector } from './CountrySelector/CountrySelector';
 import { FilterSelector } from './FilterSelector/FilterSelector';
 
 import {
+  calculateCasesPerPeriod,
+  calculateDeathsPerPeriod,
   calculateTotalCasesPerThousand,
   calculateTotalDeathsPerThousand,
   getCountryList,
@@ -60,18 +62,22 @@ export const App = () => {
 
   //--------------- Filters -------------------
 
-  function filterDataByDate(newData) {
-    return _.map(newData, country => ({
-      ...country,
-      data: _.filter(country.data, item => {
-        const itemDate = new Date(`${item.year}-${item.month}-${item.day}`);
-        return (
-          itemDate >= selectedDates.startDate &&
-          itemDate <= selectedDates.endDate
-        );
-      }),
-    }));
-  }
+  const filterDataByDate = useMemo(() => {
+    if (selectedDates.datesChanged) {
+      return groupedData.map(country => ({
+        ...country,
+        data: country.data.filter(item => {
+          const itemDate = new Date(`${item.year}-${item.month}-${item.day}`);
+          return (
+            itemDate >= selectedDates.startDate &&
+            itemDate <= selectedDates.endDate
+          );
+        }),
+      }));
+    } else {
+      return groupedData;
+    }
+  }, [groupedData, selectedDates]);
 
   function filterDataByCountry(dataArr) {
     return [_.find(dataArr, { country: selectedCountry.country })];
@@ -92,17 +98,25 @@ export const App = () => {
       : dataArr;
   };
 
+  const addTotalsPerPeriod = dataArr => {
+    return dataArr.map(country => ({
+      ...country,
+      casesPerPeriod: calculateCasesPerPeriod(country.data),
+      deathsPerPeriod: calculateDeathsPerPeriod(country.data),
+    }));
+  };
+
   function getFilteredCountries() {
     switch (true) {
       case selectedCountry != null:
-        return filterDataByDate(filterDataByCountry(groupedData));
+        return addTotalsPerPeriod(filterDataByCountry(filterDataByDate));
 
       case (filter && filter.filterStartValue !== null) ||
         (filter && filter.filterEndValue):
-        return filterDataByDate(filterDataByRange(groupedData));
+        return filterDataByRange(addTotalsPerPeriod(filterDataByDate));
 
       case selectedDates.datesChanged:
-        return filterDataByDate(groupedData);
+        return addTotalsPerPeriod(filterDataByDate);
 
       default:
         return groupedData;
@@ -157,11 +171,13 @@ export const App = () => {
       <FilterSelector handleFilterChange={handleFilterChange} />
       {/* {isTableActive ? <Table /> : <Graph />} */}
       {groupedData ? (
-        <Table data={getFilteredCountries()} />
+        <Table
+          data={getFilteredCountries()}
+          datesChanged={selectedDates.datesChanged}
+        />
       ) : (
         <div>Loading</div>
       )}
-      <button>Reset filters</button>
     </Fragment>
   );
 };
