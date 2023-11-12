@@ -2,12 +2,11 @@ import Select from 'react-select';
 import PropTypes, { string } from 'prop-types';
 
 export const CountrySelector = ({ countryList, handleCountryChange }) => {
-  const options = [];
+  const options = [{ label: 'All Countries', value: null }];
   countryList.forEach(item => {
     options.push({ value: `${item}`, label: `${item}` });
   });
   const handleSelectorChange = event => {
-    console.log(event.value);
     handleCountryChange(event.value);
   };
   return (

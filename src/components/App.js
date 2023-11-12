@@ -19,6 +19,7 @@ export const App = () => {
   const [selectedDates, setSelectedDates] = useState({
     startDate: new Date('2019-12-31'),
     endDate: new Date('2020-12-14'),
+    datesChanged: false,
   });
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [filter, setFilter] = useState(null);
@@ -57,27 +58,10 @@ export const App = () => {
     setGroupedData(groupedDataByCountry);
   }, [groupedDataByCountry]);
 
-  const handleDateChange = (startDate, endDate) => {
-    setSelectedDates({ startDate, endDate });
-  };
+  //--------------- Filters -------------------
 
-  function filterDataByDateAndCountry() {
-    if (selectedCountry) {
-      return [
-        {
-          ...selectedCountry,
-          data: _.filter(selectedCountry.data, item => {
-            const itemDate = new Date(`${item.year}-${item.month}-${item.day}`);
-            return (
-              itemDate >= selectedDates.startDate &&
-              itemDate <= selectedDates.endDate
-            );
-          }),
-        },
-      ];
-    }
-
-    return _.map(groupedData, country => ({
+  function filterDataByDate(newData) {
+    return _.map(newData, country => ({
       ...country,
       data: _.filter(country.data, item => {
         const itemDate = new Date(`${item.year}-${item.month}-${item.day}`);
@@ -89,10 +73,13 @@ export const App = () => {
     }));
   }
 
-  const filterDataByRange = () => {
-    const arr = filterDataByDateAndCountry();
+  function filterDataByCountry(dataArr) {
+    return [_.find(dataArr, { country: selectedCountry.country })];
+  }
+
+  const filterDataByRange = dataArr => {
     return filter && filter.selectedFilter
-      ? _.filter(arr, country => {
+      ? _.filter(dataArr, country => {
           const countryValue = country[filter.selectedFilter];
           const startCondition =
             filter.filterStartValue == null ||
@@ -102,10 +89,31 @@ export const App = () => {
             countryValue <= filter.filterEndValue;
           return startCondition && endCondition;
         })
-      : arr;
+      : dataArr;
   };
 
-  console.log(filterDataByRange());
+  function getFilteredCountries() {
+    switch (true) {
+      case selectedCountry != null:
+        return filterDataByDate(filterDataByCountry(groupedData));
+
+      case (filter && filter.filterStartValue !== null) ||
+        (filter && filter.filterEndValue):
+        return filterDataByDate(filterDataByRange(groupedData));
+
+      case selectedDates.datesChanged:
+        return filterDataByDate(groupedData);
+
+      default:
+        return groupedData;
+    }
+  }
+
+  //-------------- Handlers ---------------
+
+  const handleDateChange = (startDate, endDate) => {
+    setSelectedDates({ startDate, endDate, datesChanged: true });
+  };
 
   const handleCountryChange = country => {
     setSelectedCountry(_.find(groupedData, { country }));
@@ -149,7 +157,7 @@ export const App = () => {
       <FilterSelector handleFilterChange={handleFilterChange} />
       {/* {isTableActive ? <Table /> : <Graph />} */}
       {groupedData ? (
-        <Table data={filterDataByDateAndCountry()} />
+        <Table data={getFilteredCountries()} />
       ) : (
         <div>Loading</div>
       )}
