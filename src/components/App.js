@@ -1,7 +1,7 @@
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import { Datepicker } from './Datepicker/Datepicker';
 import { Table } from './Table/Table';
-// import { Graph } from './Graph/Graph';
+import { Graph } from './Graph/Graph';
 import _ from 'lodash';
 import { CountrySelector } from './CountrySelector/CountrySelector';
 import { FilterSelector } from './FilterSelector/FilterSelector';
@@ -15,7 +15,7 @@ import {
 } from './helpers';
 
 export const App = () => {
-  // const [isTableActive, setIsTableActive] = useState(true);
+  const [isTableActive, setIsTableActive] = useState(true);
   const [data, setData] = useState([]);
   const [groupedData, setGroupedData] = useState([]);
   const [selectedDates, setSelectedDates] = useState({
@@ -78,6 +78,43 @@ export const App = () => {
       return groupedData;
     }
   }, [groupedData, selectedDates]);
+
+  function calculateTotalsPerDay(xx) {
+    return xx.map(country => {
+      return country.data.map(item => {
+        return {
+          cases: item.cases,
+          deaths: item.deaths,
+        };
+      });
+    });
+  }
+
+  function calculateTotalCasesAndDeathsPerDay(countriesData) {
+    return countriesData[0].map((_, index) => {
+      const dayData = countriesData.map(country => country[index]);
+      const totalCases = dayData.reduce(
+        (sum, item) => sum + (item?.cases || 0),
+        0
+      );
+      const totalDeaths = dayData.reduce(
+        (sum, item) => sum + (item?.deaths || 0),
+        0
+      );
+
+      return { totalCases, totalDeaths };
+    });
+  }
+
+  function test() {
+    return selectedCountry
+      ? calculateTotalCasesAndDeathsPerDay(
+          calculateTotalsPerDay(filterDataByCountry(filterDataByDate))
+        )
+      : calculateTotalCasesAndDeathsPerDay(
+          calculateTotalsPerDay(filterDataByDate)
+        );
+  }
 
   function filterDataByCountry(dataArr) {
     return [_.find(dataArr, { country: selectedCountry.country })];
@@ -149,17 +186,23 @@ export const App = () => {
   return (
     <Fragment>
       <Datepicker handleDateChange={handleDateChange} />
-
       <button
         onClick={() => {
-          // setIsTableActive(true);
+          test();
+        }}
+      >
+        Test
+      </button>
+      <button
+        onClick={() => {
+          setIsTableActive(true);
         }}
       >
         Table
       </button>
       <button
         onClick={() => {
-          // setIsTableActive(false);
+          setIsTableActive(false);
         }}
       >
         Graph
@@ -169,14 +212,13 @@ export const App = () => {
         handleCountryChange={handleCountryChange}
       />
       <FilterSelector handleFilterChange={handleFilterChange} />
-      {/* {isTableActive ? <Table /> : <Graph />} */}
-      {groupedData ? (
+      {isTableActive ? (
         <Table
           data={getFilteredCountries()}
           datesChanged={selectedDates.datesChanged}
         />
       ) : (
-        <div>Loading</div>
+        <Graph data={test()} />
       )}
     </Fragment>
   );
