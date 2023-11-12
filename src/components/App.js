@@ -40,7 +40,7 @@ export const App = () => {
     return _.chain(data)
       .groupBy('countriesAndTerritories')
       .map((items, country) => ({
-        country,
+        country: country.replace(/_/g, ` `),
         data: items.map(({ dateRep, ...rest }) => ({ dateRep, ...rest })),
         totalCases: _.sumBy(items, 'cases'),
         totalDeaths: _.sumBy(items, 'deaths'),
@@ -85,6 +85,7 @@ export const App = () => {
         return {
           cases: item.cases,
           deaths: item.deaths,
+          day: item.dateRep,
         };
       });
     });
@@ -93,6 +94,7 @@ export const App = () => {
   function calculateTotalCasesAndDeathsPerDay(countriesData) {
     return countriesData[0].map((_, index) => {
       const dayData = countriesData.map(country => country[index]);
+
       const totalCases = dayData.reduce(
         (sum, item) => sum + (item?.cases || 0),
         0
@@ -102,7 +104,7 @@ export const App = () => {
         0
       );
 
-      return { totalCases, totalDeaths };
+      return { totalCases, totalDeaths, day: countriesData[0][index].day };
     });
   }
 
@@ -218,7 +220,7 @@ export const App = () => {
           datesChanged={selectedDates.datesChanged}
         />
       ) : (
-        <Graph data={test()} />
+        <Graph graphData={test()} />
       )}
     </Fragment>
   );
