@@ -1,6 +1,5 @@
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import { Datepicker } from './Datepicker/Datepicker';
-import { Table } from './Table/Table';
 import { Graph } from './Graph/Graph';
 import _ from 'lodash';
 import { CountrySelector } from './CountrySelector/CountrySelector';
@@ -13,6 +12,7 @@ import {
   calculateTotalDeathsPerThousand,
   getCountryList,
 } from './helpers';
+import { PaginatedItems } from './Pagination/Pagination';
 
 export const App = () => {
   const [isTableActive, setIsTableActive] = useState(true);
@@ -150,8 +150,9 @@ export const App = () => {
       case selectedCountry != null:
         return addTotalsPerPeriod(filterDataByCountry(filterDataByDate));
 
-      case (filter && filter.filterStartValue !== null) ||
-        (filter && filter.filterEndValue):
+      case ((filter && filter.filterStartValue !== null) ||
+        (filter && filter.filterEndValue)) &&
+        filter.filterEndValue > filter.filterStartValue:
         return filterDataByRange(addTotalsPerPeriod(filterDataByDate));
 
       case selectedDates.datesChanged:
@@ -189,13 +190,8 @@ export const App = () => {
     <Fragment>
       <Datepicker handleDateChange={handleDateChange} />
       <button
-        onClick={() => {
-          test();
-        }}
-      >
-        Test
-      </button>
-      <button
+        type="button"
+        className="btn btn-primary"
         onClick={() => {
           setIsTableActive(true);
         }}
@@ -203,6 +199,8 @@ export const App = () => {
         Table
       </button>
       <button
+        type="button"
+        className="btn btn-secondary"
         onClick={() => {
           setIsTableActive(false);
         }}
@@ -215,7 +213,8 @@ export const App = () => {
       />
       <FilterSelector handleFilterChange={handleFilterChange} />
       {isTableActive ? (
-        <Table
+        <PaginatedItems
+          itemsPerPage={20}
           data={getFilteredCountries()}
           datesChanged={selectedDates.datesChanged}
         />

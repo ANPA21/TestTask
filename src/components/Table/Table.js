@@ -2,21 +2,24 @@ import PropTypes, { shape } from 'prop-types';
 
 export const Table = ({ data, datesChanged }) => {
   return (
-    <table>
+    <table className="table table-light">
       <thead>
-        <tr>
-          <th>Country</th>
-          <th>Cases per selected period</th>
-          <th>Deaths per selected period</th>
-          <th>Total Cases</th>
-          <th>Total Deaths</th>
-          <th>Cases per 1000</th>
-          <th>Deaths per 1000</th>
+        <tr className="table-dark">
+          <th scope="col">Country</th>
+          <th scope="col">Cases per selected period</th>
+          <th scope="col">Deaths per selected period</th>
+          <th scope="col">Total Cases</th>
+          <th scope="col">Total Deaths</th>
+          <th scope="col">Cases per 1000</th>
+          <th scope="col">Deaths per 1000</th>
         </tr>
       </thead>
       <tbody>
         {data.map((country, index) => (
-          <tr key={index}>
+          <tr
+            key={index}
+            className={index % 2 === 1 ? `table-light` : `table-secondary`}
+          >
             <td>{country.country}</td>
             <td>
               {datesChanged ? country.casesPerPeriod : country.totalCases}
@@ -53,4 +56,5 @@ Table.propTypes = {
       deathsPer1000: PropTypes.string.isRequired,
     })
   ),
+  datesChanged: PropTypes.bool.isRequired,
 };

@@ -21,7 +21,6 @@ ChartJS.register(
 );
 
 export const Graph = ({ graphData }) => {
-  console.log(graphData);
   const labels = graphData
     .slice()
     .reverse()

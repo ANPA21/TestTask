@@ -27,32 +27,38 @@ export const Datepicker = ({ handleDateChange }) => {
 
   return (
     <div>
-      <Flatpickr
-        ref={fpStart}
-        data-enable-time
-        options={{
-          minDate: '2019-12-31',
-          maxDate: '2020-12-14',
-          enableTime: 'false',
-          dateFormat: 'Y-m-d',
-          defaultDate: startDate,
-        }}
-        onChange={handleStartDateChange}
-      />
-      <Flatpickr
-        ref={fpEnd}
-        data-enable-time
-        defaultValue={endDate}
-        options={{
-          minDate: selectedStartDate,
-          maxDate: '2020-12-14',
-          enableTime: 'false',
-          dateFormat: 'Y-m-d',
+      <div style={{ width: `300px` }}>
+        <Flatpickr
+          ref={fpStart}
+          data-enable-time
+          options={{
+            minDate: '2019-12-31',
+            maxDate: '2020-12-14',
+            enableTime: 'false',
+            dateFormat: 'Y-m-d',
+            defaultDate: startDate,
+          }}
+          onChange={handleStartDateChange}
+          className="form-select"
+        />
+      </div>
+      <div style={{ width: `300px` }}>
+        <Flatpickr
+          ref={fpEnd}
+          data-enable-time
+          defaultValue={endDate}
+          options={{
+            minDate: selectedStartDate,
+            maxDate: '2020-12-14',
+            enableTime: 'false',
+            dateFormat: 'Y-m-d',
 
-          defaultDate: endDate,
-        }}
-        onChange={handleEndDateChange}
-      />
+            defaultDate: endDate,
+          }}
+          onChange={handleEndDateChange}
+          className="form-select"
+        />
+      </div>
     </div>
   );
 };

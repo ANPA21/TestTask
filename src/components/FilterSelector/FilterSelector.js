@@ -42,14 +42,18 @@ export const FilterSelector = ({ handleFilterChange }) => {
         type="number"
         placeholder="Start Value"
         onChange={handleStartInputChange}
+        className="form-control"
       />
       <input
         value={filterEndValue === null ? `` : filterEndValue}
         type="number"
         placeholder="End Value"
         onChange={handleEndInputChange}
+        className="form-control"
       />
-      <button onClick={resetFilters}>Reset filters</button>
+      <button type="button" className="btn btn-primary" onClick={resetFilters}>
+        Reset filters
+      </button>
     </div>
   );
 };
