@@ -1,3 +1,5 @@
+import PropTypes, { shape } from 'prop-types';
+
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -88,4 +90,14 @@ export const Graph = ({ graphData }) => {
       <Line data={graphDatasets} options={options} />
     </GrapWrapper>
   );
+};
+
+Graph.propTypes = {
+  graphData: PropTypes.arrayOf(
+    shape({
+      day: PropTypes.string.isRequired,
+      totalCases: PropTypes.number.isRequired,
+      totalDeaths: PropTypes.number.isRequired,
+    })
+  ),
 };

@@ -1,3 +1,5 @@
+import PropTypes, { shape } from 'prop-types';
+
 import ReactPaginate from 'react-paginate';
 import { useEffect, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
@@ -61,3 +63,30 @@ export function PaginatedItems({ itemsPerPage, data, datesChanged, filter }) {
     </Container>
   );
 }
+
+PaginatedItems.propTypes = {
+  itemsPerPage: PropTypes.number.isRequired,
+  filter: PropTypes.shape({
+    selectedFilter: PropTypes.string,
+    filterStartValue: PropTypes.string,
+    filterEndValue: PropTypes.string,
+  }),
+  data: PropTypes.arrayOf(
+    shape({
+      country: PropTypes.string.isRequired,
+      data: PropTypes.arrayOf(
+        shape({
+          dateRep: PropTypes.string.isRequired,
+          popData2019: PropTypes.number,
+          cases: PropTypes.number.isRequired,
+          deaths: PropTypes.number.isRequired,
+        })
+      ),
+      totalCases: PropTypes.number.isRequired,
+      casesPer1000: PropTypes.string.isRequired,
+      totalDeaths: PropTypes.number.isRequired,
+      deathsPer1000: PropTypes.string.isRequired,
+    })
+  ),
+  datesChanged: PropTypes.bool.isRequired,
+};
