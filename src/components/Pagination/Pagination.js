@@ -1,10 +1,10 @@
 import ReactPaginate from 'react-paginate';
 import { useEffect, useState } from 'react';
-import { Table } from 'components/Table/Table';
 import { useMediaQuery } from 'react-responsive';
+import { Table } from 'components/Table/Table';
 import { Container, TableWrapper } from './Pagination.styled';
 
-export function PaginatedItems({ itemsPerPage, data, datesChanged }) {
+export function PaginatedItems({ itemsPerPage, data, datesChanged, filter }) {
   const [itemOffset, setItemOffset] = useState(0);
   const endOffset = itemOffset + itemsPerPage;
   const currentItems = data.slice(itemOffset, endOffset);
@@ -32,15 +32,19 @@ export function PaginatedItems({ itemsPerPage, data, datesChanged }) {
       }}
     >
       <TableWrapper className="table-responsive card">
-        <Table data={currentItems} datesChanged={datesChanged} />
+        <Table
+          data={currentItems}
+          datesChanged={datesChanged}
+          filter={filter}
+        />
       </TableWrapper>
       <ReactPaginate
-        nextLabel="next >"
+        nextLabel="> >"
         onPageChange={handlePageClick}
         pageRangeDisplayed={isMobile ? 2 : 3}
         marginPagesDisplayed={isMobile ? 1 : 2}
         pageCount={pageCount}
-        previousLabel="< previous"
+        previousLabel="< <"
         pageClassName="page-item"
         pageLinkClassName="page-link"
         previousClassName="page-item"

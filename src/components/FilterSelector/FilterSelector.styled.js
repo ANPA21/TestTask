@@ -7,20 +7,14 @@ export const StyledSelect = styled(Select)`
   @media screen and (min-width: 748px) and (max-width: 1024px) {
     max-width: 350px;
   }
-`;
-
-export const StyledInput = styled.input`
-  margin-top: 5px;
-
-  width: 100%;
-  max-width: 300px;
-  @media screen and (min-width: 748px) and (max-width: 1024px) {
-    max-width: 350px;
-  }
   @media screen and (min-width: 1025px) {
-    margin-top: 0;
+    width: 230px;
+  }
+  @media screen and (min-width: 1300px) {
+    width: 300px;
   }
 `;
+
 export const StyledBtn = styled.button`
   margin-top: 15px;
   width: 210px;
@@ -34,6 +28,14 @@ export const FilterContainer = styled.div`
   flex-direction: column;
   align-items: center;
   width: 100%;
+  @media screen and (min-width: 748px) {
+  }
+  @media screen and (min-width: 1025px) {
+    width: 230px;
+  }
+  @media screen and (min-width: 1300px) {
+    width: 300px;
+  }
 `;
 export const InputsContainer = styled.div`
   display: flex;
@@ -47,6 +49,24 @@ export const InputsContainer = styled.div`
     gap: 20px;
   }
 `;
+
+export const StyledInput = styled.input`
+  margin-top: 5px;
+
+  width: 100%;
+  max-width: 300px;
+  @media screen and (min-width: 748px) and (max-width: 1024px) {
+    max-width: 350px;
+  }
+  @media screen and (min-width: 1025px) {
+    margin-top: 0;
+    width: 230px;
+  }
+  @media screen and (min-width: 1300px) {
+    width: 300px;
+  }
+`;
+
 export const GroupContainer = styled.div`
   display: flex;
   flex-direction: column;

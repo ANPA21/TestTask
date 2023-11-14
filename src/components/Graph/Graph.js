@@ -84,16 +84,7 @@ export const Graph = ({ graphData }) => {
   };
 
   return (
-    <GrapWrapper
-    // style={{
-    //   display: `flex`,
-    //   alignItems: `center`,
-    //   height: `100vh`,
-    //   width: `100%`,
-    //   transform: `rotate(-90deg)`,
-    //   maxWidth: `500px`,
-    // }}
-    >
+    <GrapWrapper>
       <Line data={graphDatasets} options={options} />
     </GrapWrapper>
   );

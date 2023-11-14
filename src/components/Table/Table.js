@@ -1,7 +1,7 @@
 import PropTypes, { shape } from 'prop-types';
 import { StyledTable, StyledTh } from './Table.styled';
 
-export const Table = ({ data, datesChanged }) => {
+export const Table = ({ data, datesChanged, filter }) => {
   return (
     <StyledTable className="table table-sm table-light">
       <thead>
@@ -16,7 +16,7 @@ export const Table = ({ data, datesChanged }) => {
         </tr>
       </thead>
       <tbody>
-        {data.length === 0 ? (
+        {data.length === 0 && filter && filter.selectedFilter ? (
           <tr>
             <th>No Data Found</th>
           </tr>

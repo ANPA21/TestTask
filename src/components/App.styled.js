@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 export const AppWrapper = styled.div`
   display: flex;
@@ -44,23 +44,16 @@ export const BtnsWrapper = styled.div`
   }
 
   @media screen and (min-width: 1025px) {
-    /* border: 1px solid black; */
     height: 40px;
   }
 `;
 
-const buttonStyles = css`
+export const Btn = styled.button`
   width: 100px;
+
   @media screen and (min-width: 748px) {
     width: 165px;
   }
-`;
-
-export const TableBtn = styled.button`
-  ${buttonStyles}
-`;
-export const GraphBtn = styled.button`
-  ${buttonStyles}
 `;
 
 //Controls
@@ -69,7 +62,6 @@ export const ControlsContainer = styled.div`
   margin-bottom: 15px;
 
   @media screen and (min-width: 1025px) {
-    /* border: 1px solid tomato; */
     display: flex;
     justify-content: center;
     gap: 20px;
@@ -83,9 +75,10 @@ export const CountrySelectorWrapper = styled.div`
   justify-content: center;
   margin-bottom: 15px;
   @media screen and (min-width: 1025px) {
-    /* border: 1px solid yellow; */
-    /* margin-left: auto; */
-    min-width: 300px;
+    width: 230px;
+  }
+  @media screen and (min-width: 1300px) {
+    width: 300px;
   }
 `;
 
@@ -100,8 +93,6 @@ export const FilterSelectorWrapper = styled.div`
     display: flex;
     flex-direction: row;
     align-items: start;
-    /* border: 1px solid teal; */
-    /* margin-right: auto; */
     gap: 20px;
   }
 `;

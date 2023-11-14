@@ -1,30 +1,14 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import _ from 'lodash';
+
 import { Datepicker } from './Datepicker/Datepicker';
 import { Graph } from './Graph/Graph';
-import _ from 'lodash';
 import { CountrySelector } from './CountrySelector/CountrySelector';
 import { FilterSelector } from './FilterSelector/FilterSelector';
-
-import {
-  calculateCasesPerPeriod,
-  calculateDeathsPerPeriod,
-  calculateTotalCasesPerThousand,
-  calculateTotalDeathsPerThousand,
-  getCountryList,
-} from './helpers';
 import { PaginatedItems } from './Pagination/Pagination';
-import {
-  AppWrapper,
-  DateSelectorWrapper,
-  GraphBtn,
-  TableBtn,
-  BtnsWrapper,
-  CountrySelectorWrapper,
-  FilterSelectorWrapper,
-  ContentWrapper,
-  DateSelectorText,
-  ControlsContainer,
-} from './App.styled';
+
+import * as st from './App.styled';
+import * as helpers from './helpers';
 
 export const App = () => {
   const [isTableActive, setIsTableActive] = useState(true);
@@ -56,11 +40,11 @@ export const App = () => {
         data: items.map(({ dateRep, ...rest }) => ({ dateRep, ...rest })),
         totalCases: _.sumBy(items, 'cases'),
         totalDeaths: _.sumBy(items, 'deaths'),
-        casesPer1000: calculateTotalCasesPerThousand(
+        casesPer1000: helpers.calculateTotalCasesPerThousand(
           data,
           _.sumBy(items, 'cases')
         ),
-        deathsPer1000: calculateTotalDeathsPerThousand(
+        deathsPer1000: helpers.calculateTotalDeathsPerThousand(
           data,
           _.sumBy(items, 'deaths')
         ),
@@ -91,82 +75,6 @@ export const App = () => {
     }
   }, [groupedData, selectedDates]);
 
-  function calculateTotalsPerDay(xx) {
-    return xx.map(country => {
-      return country.data.map(item => {
-        return {
-          cases: item.cases,
-          deaths: item.deaths,
-          day: item.dateRep,
-        };
-      });
-    });
-  }
-
-  function calculateTotalCasesAndDeathsPerDay(countriesData) {
-    return countriesData[0].map((_, index) => {
-      const dayData = countriesData.map(country => country[index]);
-
-      const totalCases = dayData.reduce(
-        (sum, item) => sum + (item?.cases || 0),
-        0
-      );
-      const totalDeaths = dayData.reduce(
-        (sum, item) => sum + (item?.deaths || 0),
-        0
-      );
-
-      return { totalCases, totalDeaths, day: countriesData[0][index].day };
-    });
-  }
-
-  function betterCalculateTotalsPerDay(xx) {
-    return xx.map(country => {
-      const totalsPerDay = country.data.map(item => {
-        return {
-          cases: item.cases,
-          deaths: item.deaths,
-          day: item.dateRep,
-        };
-      });
-      console.log(totalsPerDay);
-      return totalsPerDay[0].map((_, index) => {
-        const dayData = totalsPerDay.map(country => country[index]);
-
-        const totalCases = dayData.reduce(
-          (sum, item) => sum + (item?.cases || 0),
-          0
-        );
-        const totalDeaths = dayData.reduce(
-          (sum, item) => sum + (item?.deaths || 0),
-          0
-        );
-
-        return { totalCases, totalDeaths, day: totalsPerDay[0][index].day };
-      });
-    });
-  }
-
-  function testing() {
-    console.log('New : ', betterCalculateTotalsPerDay(filterDataByDate));
-    console.log(
-      'Old : ',
-      calculateTotalCasesAndDeathsPerDay(
-        calculateTotalsPerDay(filterDataByDate)
-      )
-    );
-  }
-
-  function test() {
-    return selectedCountry
-      ? calculateTotalCasesAndDeathsPerDay(
-          calculateTotalsPerDay(filterDataByCountry(filterDataByDate))
-        )
-      : calculateTotalCasesAndDeathsPerDay(
-          calculateTotalsPerDay(filterDataByDate)
-        );
-  }
-
   function filterDataByCountry(dataArr) {
     return [_.find(dataArr, { country: selectedCountry.country })];
   }
@@ -190,10 +98,12 @@ export const App = () => {
   const addTotalsPerPeriod = dataArr => {
     return dataArr.map(country => ({
       ...country,
-      casesPerPeriod: calculateCasesPerPeriod(country.data),
-      deathsPerPeriod: calculateDeathsPerPeriod(country.data),
+      casesPerPeriod: helpers.calculateCasesPerPeriod(country.data),
+      deathsPerPeriod: helpers.calculateDeathsPerPeriod(country.data),
     }));
   };
+
+  // Main Filter Switch
 
   function getFilteredCountries() {
     switch (true) {
@@ -210,6 +120,40 @@ export const App = () => {
       default:
         return groupedData;
     }
+  }
+
+  //-------------- Graph ---------------
+
+  function getTotalsPerDayArr(arr) {
+    const totalsPerDay = arr.map(country => {
+      return country.data.map(item => {
+        return {
+          cases: item.cases,
+          deaths: item.deaths,
+          day: item.dateRep,
+        };
+      });
+    });
+
+    return totalsPerDay[0].map((_, index) => {
+      const dayData = totalsPerDay.map(country => country[index]);
+
+      const totalCases = dayData.reduce(
+        (sum, item) => sum + (item?.cases || 0),
+        0
+      );
+      const totalDeaths = dayData.reduce(
+        (sum, item) => sum + (item?.deaths || 0),
+        0
+      );
+
+      return { totalCases, totalDeaths, day: totalsPerDay[0][index].day };
+    });
+  }
+  function getGraphData() {
+    return selectedCountry
+      ? getTotalsPerDayArr(filterDataByCountry(filterDataByDate))
+      : getTotalsPerDayArr(filterDataByDate);
   }
 
   //-------------- Handlers ---------------
@@ -236,30 +180,22 @@ export const App = () => {
   }, []);
 
   return (
-    <AppWrapper>
-      <button
-        style={{ width: `40px` }}
-        onClick={() => {
-          testing();
-        }}
-      >
-        click me
-      </button>
-      <DateSelectorWrapper>
-        <DateSelectorText>Choose date</DateSelectorText>
+    <st.AppWrapper>
+      <st.DateSelectorWrapper>
+        <st.DateSelectorText>Choose date</st.DateSelectorText>
         <Datepicker handleDateChange={handleDateChange} />
-      </DateSelectorWrapper>
-      <BtnsWrapper>
-        <TableBtn
-          type="StyledButton"
+      </st.DateSelectorWrapper>
+      <st.BtnsWrapper>
+        <st.Btn
+          type="button"
           className="btn btn-primary"
           onClick={() => {
             setIsTableActive(true);
           }}
         >
           Table
-        </TableBtn>
-        <GraphBtn
+        </st.Btn>
+        <st.Btn
           type="button"
           className="btn btn-primary"
           onClick={() => {
@@ -267,33 +203,34 @@ export const App = () => {
           }}
         >
           Graph
-        </GraphBtn>
-      </BtnsWrapper>
-      <ControlsContainer>
-        <CountrySelectorWrapper>
+        </st.Btn>
+      </st.BtnsWrapper>
+      <st.ControlsContainer>
+        <st.CountrySelectorWrapper>
           <CountrySelector
-            countryList={getCountryList(groupedData)}
+            countryList={helpers.getCountryList(groupedData)}
             handleCountryChange={handleCountryChange}
           />
-        </CountrySelectorWrapper>
-        <FilterSelectorWrapper>
+        </st.CountrySelectorWrapper>
+        <st.FilterSelectorWrapper>
           {isTableActive && (
             <FilterSelector handleFilterChange={handleFilterChange} />
           )}
-        </FilterSelectorWrapper>
-      </ControlsContainer>
+        </st.FilterSelectorWrapper>
+      </st.ControlsContainer>
 
-      <ContentWrapper>
+      <st.ContentWrapper>
         {isTableActive ? (
           <PaginatedItems
             itemsPerPage={20}
             data={getFilteredCountries()}
             datesChanged={selectedDates.datesChanged}
+            filter={filter}
           />
         ) : (
-          <Graph graphData={test()} />
+          <Graph graphData={getGraphData()} />
         )}
-      </ContentWrapper>
-    </AppWrapper>
+      </st.ContentWrapper>
+    </st.AppWrapper>
   );
 };

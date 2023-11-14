@@ -1,14 +1,7 @@
 import { options } from './FilterOptions';
 import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import {
-  FilterContainer,
-  GroupContainer,
-  InputsContainer,
-  StyledBtn,
-  StyledInput,
-  StyledSelect,
-} from './FilterSelector.styled';
+import * as st from './FilterSelector.styled';
 
 export const FilterSelector = ({ handleFilterChange }) => {
   const [filterStartValue, setFilterStartValue] = useState(null);
@@ -38,40 +31,40 @@ export const FilterSelector = ({ handleFilterChange }) => {
   }, [selectedFilter, filterStartValue, filterEndValue, handleFilterChange]);
   return (
     <>
-      <FilterContainer>
-        <StyledSelect
+      <st.FilterContainer>
+        <st.StyledSelect
           value={selectedFilter === null ? `` : selectedFilter.value}
           onChange={handleSelectorChange}
           options={options}
           placeholder={'Select filter'}
         />
-      </FilterContainer>
-      <GroupContainer>
-        <InputsContainer>
-          <StyledInput
+      </st.FilterContainer>
+      <st.GroupContainer>
+        <st.InputsContainer>
+          <st.StyledInput
             value={filterStartValue === null ? `` : filterStartValue}
             type="number"
             placeholder="Start Value"
             onChange={handleStartInputChange}
             className="form-control"
           />
-          <StyledInput
+          <st.StyledInput
             value={filterEndValue === null ? `` : filterEndValue}
             type="number"
             placeholder="End Value"
             onChange={handleEndInputChange}
             className="form-control"
           />
-        </InputsContainer>
+        </st.InputsContainer>
 
-        <StyledBtn
+        <st.StyledBtn
           type="button"
           className="btn btn-primary"
           onClick={resetFilters}
         >
           Reset filters
-        </StyledBtn>
-      </GroupContainer>
+        </st.StyledBtn>
+      </st.GroupContainer>
     </>
   );
 };

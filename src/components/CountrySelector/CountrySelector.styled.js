@@ -7,4 +7,11 @@ export const StyledSelect = styled(Select)`
   @media screen and (min-width: 748px) {
     max-width: 350px;
   }
+
+  @media screen and (min-width: 1025px) {
+    width: 230px;
+  }
+  @media screen and (min-width: 1300px) {
+    width: 3000px;
+  }
 `;
