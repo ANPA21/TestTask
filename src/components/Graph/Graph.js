@@ -22,8 +22,7 @@ ChartJS.register(
   Tooltip,
   Legend
 );
-
-export const Graph = ({ graphData }) => {
+const Graph = ({ graphData }) => {
   const labels = graphData
     .slice()
     .reverse()
@@ -101,3 +100,5 @@ Graph.propTypes = {
     })
   ),
 };
+
+export default Graph;

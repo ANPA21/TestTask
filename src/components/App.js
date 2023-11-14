@@ -1,14 +1,16 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState, lazy } from 'react';
 import _ from 'lodash';
 
 import { Datepicker } from './Datepicker/Datepicker';
-import { Graph } from './Graph/Graph';
 import { CountrySelector } from './CountrySelector/CountrySelector';
 import { FilterSelector } from './FilterSelector/FilterSelector';
 import { PaginatedItems } from './Pagination/Pagination';
 
 import * as st from './App.styled';
 import * as helpers from './helpers';
+import { startTransition } from 'react';
+
+const Graph = lazy(() => import('./Graph/Graph'));
 
 export const App = () => {
   const [isTableActive, setIsTableActive] = useState(true);
@@ -199,7 +201,9 @@ export const App = () => {
           type="button"
           className="btn btn-primary"
           onClick={() => {
-            setIsTableActive(false);
+            startTransition(() => {
+              setIsTableActive(false);
+            });
           }}
         >
           Graph
