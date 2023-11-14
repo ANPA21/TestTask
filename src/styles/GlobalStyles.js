@@ -1,6 +1,5 @@
 import { createGlobalStyle } from 'styled-components';
 import moderNormalize from 'modern-normalize';
-
 const GlobalStyles = createGlobalStyle`
 ${moderNormalize}
 
@@ -18,8 +17,9 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   scroll-behavior: smooth;
-  
-}
+
+   background: linear-gradient(173deg, #C9E1EA -1.41%, #F6DAC5 94.43%);}
+
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',

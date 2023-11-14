@@ -1,6 +1,8 @@
 import ReactPaginate from 'react-paginate';
 import { useEffect, useState } from 'react';
 import { Table } from 'components/Table/Table';
+import { useMediaQuery } from 'react-responsive';
+import { Container, TableWrapper } from './Pagination.styled';
 
 export function PaginatedItems({ itemsPerPage, data, datesChanged }) {
   const [itemOffset, setItemOffset] = useState(0);
@@ -18,9 +20,10 @@ export function PaginatedItems({ itemsPerPage, data, datesChanged }) {
     const newOffset = (event.selected * itemsPerPage) % data.length;
     setItemOffset(newOffset);
   };
+  const isMobile = useMediaQuery({ minWidth: 240, maxWidth: 540 });
 
   return (
-    <div
+    <Container
       style={{
         display: `flex`,
         flexDirection: `column`,
@@ -28,14 +31,14 @@ export function PaginatedItems({ itemsPerPage, data, datesChanged }) {
         justifyContent: `center`,
       }}
     >
-      <div className="table-responsive">
+      <TableWrapper className="table-responsive card">
         <Table data={currentItems} datesChanged={datesChanged} />
-      </div>
+      </TableWrapper>
       <ReactPaginate
         nextLabel="next >"
         onPageChange={handlePageClick}
-        pageRangeDisplayed={3}
-        marginPagesDisplayed={2}
+        pageRangeDisplayed={isMobile ? 2 : 3}
+        marginPagesDisplayed={isMobile ? 1 : 2}
         pageCount={pageCount}
         previousLabel="< previous"
         pageClassName="page-item"
@@ -51,6 +54,6 @@ export function PaginatedItems({ itemsPerPage, data, datesChanged }) {
         activeClassName="active"
         renderOnZeroPageCount={null}
       />
-    </div>
+    </Container>
   );
 }

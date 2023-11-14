@@ -2,6 +2,7 @@ import Flatpickr from 'react-flatpickr';
 import 'flatpickr/dist/themes/material_green.css';
 import { useRef, useState } from 'react';
 import PropTypes from 'prop-types';
+import { DatepickerWrapper, SelectWrapper } from './Datepicker.styled';
 
 export const Datepicker = ({ handleDateChange }) => {
   const startDate = '2019-12-31';
@@ -26,8 +27,8 @@ export const Datepicker = ({ handleDateChange }) => {
   };
 
   return (
-    <div>
-      <div style={{ width: `300px` }}>
+    <DatepickerWrapper>
+      <SelectWrapper>
         <Flatpickr
           ref={fpStart}
           data-enable-time
@@ -41,8 +42,8 @@ export const Datepicker = ({ handleDateChange }) => {
           onChange={handleStartDateChange}
           className="form-select"
         />
-      </div>
-      <div style={{ width: `300px` }}>
+      </SelectWrapper>
+      <SelectWrapper>
         <Flatpickr
           ref={fpEnd}
           data-enable-time
@@ -58,8 +59,8 @@ export const Datepicker = ({ handleDateChange }) => {
           onChange={handleEndDateChange}
           className="form-select"
         />
-      </div>
-    </div>
+      </SelectWrapper>
+    </DatepickerWrapper>
   );
 };
 

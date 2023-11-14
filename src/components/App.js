@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Datepicker } from './Datepicker/Datepicker';
 import { Graph } from './Graph/Graph';
 import _ from 'lodash';
@@ -13,6 +13,18 @@ import {
   getCountryList,
 } from './helpers';
 import { PaginatedItems } from './Pagination/Pagination';
+import {
+  AppWrapper,
+  DateSelectorWrapper,
+  GraphBtn,
+  TableBtn,
+  BtnsWrapper,
+  CountrySelectorWrapper,
+  FilterSelectorWrapper,
+  ContentWrapper,
+  DateSelectorText,
+  ControlsContainer,
+} from './App.styled';
 
 export const App = () => {
   const [isTableActive, setIsTableActive] = useState(true);
@@ -108,6 +120,43 @@ export const App = () => {
     });
   }
 
+  function betterCalculateTotalsPerDay(xx) {
+    return xx.map(country => {
+      const totalsPerDay = country.data.map(item => {
+        return {
+          cases: item.cases,
+          deaths: item.deaths,
+          day: item.dateRep,
+        };
+      });
+      console.log(totalsPerDay);
+      return totalsPerDay[0].map((_, index) => {
+        const dayData = totalsPerDay.map(country => country[index]);
+
+        const totalCases = dayData.reduce(
+          (sum, item) => sum + (item?.cases || 0),
+          0
+        );
+        const totalDeaths = dayData.reduce(
+          (sum, item) => sum + (item?.deaths || 0),
+          0
+        );
+
+        return { totalCases, totalDeaths, day: totalsPerDay[0][index].day };
+      });
+    });
+  }
+
+  function testing() {
+    console.log('New : ', betterCalculateTotalsPerDay(filterDataByDate));
+    console.log(
+      'Old : ',
+      calculateTotalCasesAndDeathsPerDay(
+        calculateTotalsPerDay(filterDataByDate)
+      )
+    );
+  }
+
   function test() {
     return selectedCountry
       ? calculateTotalCasesAndDeathsPerDay(
@@ -125,13 +174,14 @@ export const App = () => {
   const filterDataByRange = dataArr => {
     return filter && filter.selectedFilter
       ? _.filter(dataArr, country => {
-          const countryValue = country[filter.selectedFilter];
+          const countryValue = Number(country[filter.selectedFilter]);
+
           const startCondition =
             filter.filterStartValue == null ||
-            countryValue >= filter.filterStartValue;
+            countryValue >= Number(filter.filterStartValue);
           const endCondition =
             filter.filterEndValue == null ||
-            countryValue <= filter.filterEndValue;
+            countryValue <= Number(filter.filterEndValue);
           return startCondition && endCondition;
         })
       : dataArr;
@@ -150,9 +200,8 @@ export const App = () => {
       case selectedCountry != null:
         return addTotalsPerPeriod(filterDataByCountry(filterDataByDate));
 
-      case ((filter && filter.filterStartValue !== null) ||
-        (filter && filter.filterEndValue)) &&
-        filter.filterEndValue > filter.filterStartValue:
+      case (filter && filter.filterStartValue !== null) ||
+        (filter && filter.filterEndValue):
         return filterDataByRange(addTotalsPerPeriod(filterDataByDate));
 
       case selectedDates.datesChanged:
@@ -187,40 +236,64 @@ export const App = () => {
   }, []);
 
   return (
-    <Fragment>
-      <Datepicker handleDateChange={handleDateChange} />
+    <AppWrapper>
       <button
-        type="button"
-        className="btn btn-primary"
+        style={{ width: `40px` }}
         onClick={() => {
-          setIsTableActive(true);
+          testing();
         }}
       >
-        Table
+        click me
       </button>
-      <button
-        type="button"
-        className="btn btn-secondary"
-        onClick={() => {
-          setIsTableActive(false);
-        }}
-      >
-        Graph
-      </button>
-      <CountrySelector
-        countryList={getCountryList(groupedData)}
-        handleCountryChange={handleCountryChange}
-      />
-      <FilterSelector handleFilterChange={handleFilterChange} />
-      {isTableActive ? (
-        <PaginatedItems
-          itemsPerPage={20}
-          data={getFilteredCountries()}
-          datesChanged={selectedDates.datesChanged}
-        />
-      ) : (
-        <Graph graphData={test()} />
-      )}
-    </Fragment>
+      <DateSelectorWrapper>
+        <DateSelectorText>Choose date</DateSelectorText>
+        <Datepicker handleDateChange={handleDateChange} />
+      </DateSelectorWrapper>
+      <BtnsWrapper>
+        <TableBtn
+          type="StyledButton"
+          className="btn btn-primary"
+          onClick={() => {
+            setIsTableActive(true);
+          }}
+        >
+          Table
+        </TableBtn>
+        <GraphBtn
+          type="button"
+          className="btn btn-primary"
+          onClick={() => {
+            setIsTableActive(false);
+          }}
+        >
+          Graph
+        </GraphBtn>
+      </BtnsWrapper>
+      <ControlsContainer>
+        <CountrySelectorWrapper>
+          <CountrySelector
+            countryList={getCountryList(groupedData)}
+            handleCountryChange={handleCountryChange}
+          />
+        </CountrySelectorWrapper>
+        <FilterSelectorWrapper>
+          {isTableActive && (
+            <FilterSelector handleFilterChange={handleFilterChange} />
+          )}
+        </FilterSelectorWrapper>
+      </ControlsContainer>
+
+      <ContentWrapper>
+        {isTableActive ? (
+          <PaginatedItems
+            itemsPerPage={20}
+            data={getFilteredCountries()}
+            datesChanged={selectedDates.datesChanged}
+          />
+        ) : (
+          <Graph graphData={test()} />
+        )}
+      </ContentWrapper>
+    </AppWrapper>
   );
 };

@@ -1,5 +1,5 @@
-import Select from 'react-select';
 import PropTypes, { string } from 'prop-types';
+import { StyledSelect } from './CountrySelector.styled';
 
 export const CountrySelector = ({ countryList, handleCountryChange }) => {
   const options = [{ label: 'All Countries', value: null }];
@@ -10,13 +10,11 @@ export const CountrySelector = ({ countryList, handleCountryChange }) => {
     handleCountryChange(event.value);
   };
   return (
-    <div style={{ width: `300px` }}>
-      <Select
-        onChange={handleSelectorChange}
-        options={options}
-        placeholder={'Select country'}
-      />
-    </div>
+    <StyledSelect
+      onChange={handleSelectorChange}
+      options={options}
+      placeholder={'Select country'}
+    />
   );
 };
 

@@ -9,6 +9,7 @@ import {
   Legend,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
+import { GrapWrapper } from './Graph.styled';
 
 ChartJS.register(
   CategoryScale,
@@ -83,8 +84,17 @@ export const Graph = ({ graphData }) => {
   };
 
   return (
-    <div style={{ width: `1000px`, height: `1000px` }}>
+    <GrapWrapper
+    // style={{
+    //   display: `flex`,
+    //   alignItems: `center`,
+    //   height: `100vh`,
+    //   width: `100%`,
+    //   transform: `rotate(-90deg)`,
+    //   maxWidth: `500px`,
+    // }}
+    >
       <Line data={graphDatasets} options={options} />
-    </div>
+    </GrapWrapper>
   );
 };

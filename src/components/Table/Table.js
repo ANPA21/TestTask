@@ -1,11 +1,12 @@
 import PropTypes, { shape } from 'prop-types';
+import { StyledTable, StyledTh } from './Table.styled';
 
 export const Table = ({ data, datesChanged }) => {
   return (
-    <table className="table table-light">
+    <StyledTable className="table table-sm table-light">
       <thead>
         <tr className="table-dark">
-          <th scope="col">Country</th>
+          <StyledTh scope="col">Country</StyledTh>
           <th scope="col">Cases per selected period</th>
           <th scope="col">Deaths per selected period</th>
           <th scope="col">Total Cases</th>
@@ -15,26 +16,32 @@ export const Table = ({ data, datesChanged }) => {
         </tr>
       </thead>
       <tbody>
-        {data.map((country, index) => (
-          <tr
-            key={index}
-            className={index % 2 === 1 ? `table-light` : `table-secondary`}
-          >
-            <td>{country.country}</td>
-            <td>
-              {datesChanged ? country.casesPerPeriod : country.totalCases}
-            </td>
-            <td>
-              {datesChanged ? country.deathsPerPeriod : country.totalDeaths}
-            </td>
-            <td>{country.totalCases}</td>
-            <td>{country.totalDeaths}</td>
-            <td>{country.casesPer1000}</td>
-            <td>{country.deathsPer1000}</td>
+        {data.length === 0 ? (
+          <tr>
+            <th>No Data Found</th>
           </tr>
-        ))}
+        ) : (
+          data.map((country, index) => (
+            <tr
+              key={index}
+              className={index % 2 === 1 ? `table-light` : `table-secondary`}
+            >
+              <td>{country.country}</td>
+              <td>
+                {datesChanged ? country.casesPerPeriod : country.totalCases}
+              </td>
+              <td>
+                {datesChanged ? country.deathsPerPeriod : country.totalDeaths}
+              </td>
+              <td>{country.totalCases}</td>
+              <td>{country.totalDeaths}</td>
+              <td>{country.casesPer1000}</td>
+              <td>{country.deathsPer1000}</td>
+            </tr>
+          ))
+        )}
       </tbody>
-    </table>
+    </StyledTable>
   );
 };
 
